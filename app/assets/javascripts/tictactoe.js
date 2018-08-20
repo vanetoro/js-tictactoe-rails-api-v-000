@@ -12,8 +12,10 @@ var winCombos = [
   [2,4,6]
   ]
 
-function player(turnCount){
-  if(turnCount%2 === 0){
+
+
+function player(){
+  if(turn%2 === 0){
 		return 'X'
 	} else{
     return 'O'
@@ -32,15 +34,21 @@ function setMessage(string){
 }
 
 function checkWinner(){
+  let gameBoard = document.querySelectorAll('td');
+  gameBoard = Array.from(gameBoard)
+  winCombos.forEach(function(combo) {
+    if(gameBoard[combo[0]].innerHTML === gameBoard[combo[1]].innerHTML && gameBoard[combo[1]].innerHTML && gameBoard[combo[2]].innerHTML && gameBoard[combo[1]].innerHTML !== '' ){
+      setMessage()
+    }
+  })
 
-  setMessage()
+  
 }
 
 function doTurn(tdElement){
   turn += 1
   updateState(tdElement)
   checkWinner()
-
 }
 
 function previousGames(array){
