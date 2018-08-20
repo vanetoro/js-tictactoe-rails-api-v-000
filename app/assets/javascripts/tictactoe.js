@@ -10,8 +10,7 @@ function player(turnCount){
 
 function updateState(tdElement){
   var move = player()
-  console.log(tdElement)
-  $(`${tdElement}`).text(move)
+  tdElement.innerHTML = move
   // $(`[data-x=${xCoord}][data-y=${yCoord}]`).text(move)
 }
 
@@ -25,9 +24,17 @@ function checkWinner(){
   setMessage()
 }
 
-function doTurn(){
+function doTurn(tdElement){
   turn += 1
-  updateState()
+  updateState(tdElement)
   checkWinner()
 
+}
+
+function previousGames(array){
+  document.getElementById('games') = "<ul>"
+  array.forEach(function(element){
+    $('#games').append(`<li> ${element} </li>`)
+  })
+  document.getElementById('games') += "</ul>"
 }
