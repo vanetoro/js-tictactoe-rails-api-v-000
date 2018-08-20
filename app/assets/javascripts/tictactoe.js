@@ -35,15 +35,17 @@ function setMessage(string){
 function checkWinner(){
   let gameBoard = document.querySelectorAll('td');
   gameBoard = Array.from(gameBoard)
-  winCombos.forEach(function(combo) {
-    if(gameBoard[combo[0]].innerHTML === gameBoard[combo[1]].innerHTML && gameBoard[combo[1]].innerHTML && gameBoard[combo[2]].innerHTML && gameBoard[combo[1]].innerHTML !== '' ){
-      var player = gameBoard[combo[0]].innerHTML
+  // winCombos.forEach(function(combo) {
+    for(var i =0; i<winCombos.length; i++){
+    if(gameBoard[winCombos[0]].innerHTML === gameBoard[winCombos[1]].innerHTML && gameBoard[winCombos[1]].innerHTML && gameBoard[winCombos[2]].innerHTML && gameBoard[winCombos[1]].innerHTML !== '' ){
+      var player = gameBoard[winCombos[0]].innerHTML
       setMessage(`Player ${player} Won!`)
       return true
     } else {
       return false
     }
-  })
+  }
+// )
 
   
 }
