@@ -25,7 +25,6 @@ function player(){
 function updateState(tdElement){
   var move = player()
   tdElement.innerHTML = move
-  // $(`[data-x=${xCoord}][data-y=${yCoord}]`).text(move)
 }
 
 
@@ -52,7 +51,10 @@ function checkWinner(){
 function doTurn(tdElement){
   turn += 1
   updateState(tdElement)
-  checkWinner()
+  var winner = checkWinner()
+    if(winner === true){
+      console.log(winner)
+    }
 }
 
 function previousGames(array){
