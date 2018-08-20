@@ -38,7 +38,11 @@ function checkWinner(){
   gameBoard = Array.from(gameBoard)
   winCombos.forEach(function(combo) {
     if(gameBoard[combo[0]].innerHTML === gameBoard[combo[1]].innerHTML && gameBoard[combo[1]].innerHTML && gameBoard[combo[2]].innerHTML && gameBoard[combo[1]].innerHTML !== '' ){
-      setMessage()
+      var player = gameBoard[combo[0]].innerHTML
+      setMessage(`Player ${player} Won!`)
+      return true
+    } else {
+      return false
     }
   })
 
