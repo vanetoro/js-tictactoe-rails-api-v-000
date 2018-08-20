@@ -23,3 +23,40 @@
 <button id="save">Save Game</button>
 <button id="previous">Show Previous Games</button>
 <button id="clear">Clear Current Game</button>
+
+
+<script type="text/javascript" charset="utf-8">
+	$(function() {
+		 $('#clear').on('click', function() {
+		 	$.post("/games", function() {
+				alert('new game')
+		 })
+		})
+})
+</script>
+
+
+<script type="text/javascript" charset="utf-8">
+	$(function() {
+    var gameId
+		 $('#save').on('click', function() {
+		 	$.put("/games"+ gameId, function() {
+				alert('update game')
+		 })
+		})
+})
+</script>
+
+
+<script type="text/javascript" charset="utf-8">
+$(function() {
+	$('td').on('click', function() {
+	doTurn(this)
+	// var xCoord = this['dataset']["x"]
+ // 	var yCoord = this['dataset']["y"]
+
+	// console.log($(`[data-x=${xCoord}][data-y=${yCoord}]`))
+
+	})
+})
+</script>
