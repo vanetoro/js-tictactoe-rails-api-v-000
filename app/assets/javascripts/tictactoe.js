@@ -98,6 +98,14 @@ function getPreviousGames() {
 		})
 	}
 
+function saveGame() {
+  		 $('button#save').on('click', function() {
+  		 	$.put("/games", function() {
+  				alert('update game')
+  		 })
+  		})
+  }
+
 
 $(document).ready(function() {
   attachListeners();
