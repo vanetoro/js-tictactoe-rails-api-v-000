@@ -35,28 +35,34 @@ function setMessage(string){
 function checkWinner(){
   let gameBoard = document.querySelectorAll('td');
   gameBoard = Array.from(gameBoard)
-  // winCombos.forEach(function(combo) {
     for(var i =0; i<winCombos.length; i++){
-    if(gameBoard[winCombos[0]].innerHTML === gameBoard[winCombos[1]].innerHTML && gameBoard[winCombos[1]].innerHTML && gameBoard[winCombos[2]].innerHTML && gameBoard[winCombos[1]].innerHTML !== '' ){
-      var player = gameBoard[winCombos[0]].innerHTML
-      setMessage(`Player ${player} Won!`)
-      return true
-    } else {
+      var combo = winCombos[i]
+        if(gameBoard[combo[0]].innerHTML === gameBoard[combo[1]].innerHTML && gameBoard[combo[1]].innerHTML && gameBoard[combo[2]].innerHTML && gameBoard[combo[1]].innerHTML !== '' ){
+          var player = gameBoard[combo[0]].innerHTML
+          setMessage(`Player ${player} Won!`)
+          return true
+        }else {
+        }
+      }
+      if(checkBoard(gameBoard) === true){
+        setMessage("Tie Game!")
+      }
       return false
-    }
-  }
-// )
+}
 
-  
+function checkBoard(board){
+  for(var i = 0; i<board.length; i++){
+    if(board[i].innerHTML === ''){
+        return false
+      }
+    }
+    return true
 }
 
 function doTurn(tdElement){
   turn += 1
   updateState(tdElement)
-  var winner = checkWinner()
-    if(winner === true){
-      console.log(winner)
-    }
+  checkWinner()
 }
 
 function previousGames(array){
