@@ -80,6 +80,7 @@ function clearBoard(){
   gameBoard.forEach(function(spot){
     spot.innerHTML = ''
   })
+  currentGame += 1
 }
 
 function previousGames(array){
