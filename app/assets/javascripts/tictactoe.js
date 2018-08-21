@@ -89,6 +89,16 @@ function previousGames(array){
   document.getElementById('games') += "</ul>"
 }
 
+
+function getPreviousGames() {
+		$('button#previous').on('click',function() {
+				$.get("/games", function(data) {
+					previousGames(data)
+				})
+		})
+	}
+
+
 $(document).ready(function() {
   attachListeners();
 });
