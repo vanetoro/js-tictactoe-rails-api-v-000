@@ -1,5 +1,6 @@
 // Code your JavaScript / jQuery solution here
 var turn = 0;
+var currentGame;
 
 var winCombos = [
   [0,1,2],
@@ -13,14 +14,14 @@ var winCombos = [
   ]
 
 
-
-function player(){
-  if(turn%2 === 0){
-		return 'X'
-	} else{
-    return 'O'
-  }
-}
+player = () => turn%2===0 ? 'X' : "O"
+// function player(){
+//   if(turn%2 === 0){
+// 		return 'X'
+// 	} else{
+//     return 'O'
+//   }
+// }
 
 function updateState(tdElement){
   var move = player()
@@ -37,8 +38,9 @@ function setMessage(string){
 }
 
 function checkWinner(){
-  let gameBoard = document.querySelectorAll('td');
-  gameBoard = Array.from(gameBoard)
+  gameBoard = getBoardArray()
+  // let gameBoard = document.querySelectorAll('td');
+  // gameBoard = Array.from(gameBoard)
     for(var i =0; i<winCombos.length; i++){
       var combo = winCombos[i]
         if((gameBoard[combo[0]].innerHTML === gameBoard[combo[1]].innerHTML) && (gameBoard[combo[1]].innerHTML === gameBoard[combo[2]].innerHTML) && (gameBoard[combo[1]].innerHTML !== '') ){
@@ -74,11 +76,13 @@ function doTurn(tdElement){
 }
 
 function clearBoard(){
-  let gameBoard = document.querySelectorAll('td');
-  gameBoard = Array.from(gameBoard)
+  getBoardArray()
+  // let gameBoard = document.querySelectorAll('td');
+  // gameBoard = Array.from(gameBoard)
   gameBoard.forEach(function(spot){
     spot.innerHTML = ''
   })
+  currentGame += 1
 }
 
 function previousGames(array){
@@ -89,6 +93,40 @@ function previousGames(array){
   document.getElementById('games') += "</ul>"
 }
 
+
+function getPreviousGames() {
+		$('button#previous').on('click',function() {
+				$.get("/games", function(data) {
+					previousGames(data)
+				})
+		})
+	}
+
+function getBoardArray() {
+  var gameBoard = document.querySelectorAll('td');
+  return gameBoard = Array.from(gameBoard)
+  return gameBoard
+}
+
+function saveGame() {
+  gameBoard = getBoardArray()
+  var state = []
+
+  gameBoard.forEach(function(){
+    state.push(gameBoard.innerHTML)
+  })
+
+  var gameData = { state: state };
+
+  $.ajax({
+    type: 'POST',
+    url: `/games/`,
+    data: gameData
+  })
+
+  }
+
+
 $(document).ready(function() {
   attachListeners();
 });
@@ -97,4 +135,5 @@ function attachListeners() {
 	$('td').on('click', function() {
 	doTurn(this)
 })
+  $('#save').on('click', () => saveGame())
 }
