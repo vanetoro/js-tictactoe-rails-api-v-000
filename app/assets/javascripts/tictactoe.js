@@ -13,7 +13,7 @@ var winCombos = [
   ]
 
 
-player = () => turn% 2 ? 'X' : "O"
+player = () => turn%2===0 ? 'X' : "O"
 // function player(){
 //   if(turn%2 === 0){
 // 		return 'X'
