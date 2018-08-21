@@ -15,13 +15,6 @@ var winCombos = [
 
 
 player = () => turn%2===0 ? 'X' : "O"
-// function player(){
-//   if(turn%2 === 0){
-// 		return 'X'
-// 	} else{
-//     return 'O'
-//   }
-// }
 
 function updateState(tdElement){
   var move = player()
@@ -39,15 +32,12 @@ function setMessage(string){
 
 function checkWinner(){
   gameBoard = getBoardArray()
-  // let gameBoard = document.querySelectorAll('td');
-  // gameBoard = Array.from(gameBoard)
-    for(var i =0; i<winCombos.length; i++){
-      var combo = winCombos[i]
-        if((gameBoard[combo[0]].innerHTML === gameBoard[combo[1]].innerHTML) && (gameBoard[combo[1]].innerHTML === gameBoard[combo[2]].innerHTML) && (gameBoard[combo[1]].innerHTML !== '') ){
-          var player = gameBoard[combo[0]].innerHTML
-          setMessage(`Player ${player} Won!`)
-          return true
-        }else {
+  for(var i =0; i<winCombos.length; i++){
+    var combo = winCombos[i]
+      if((gameBoard[combo[0]].innerHTML === gameBoard[combo[1]].innerHTML) && (gameBoard[combo[1]].innerHTML === gameBoard[combo[2]].innerHTML) && (gameBoard[combo[1]].innerHTML !== '') ){
+        var player = gameBoard[combo[0]].innerHTML
+        setMessage(`Player ${player} Won!`)
+        return true
         }
       }
       if(checkBoard(gameBoard) === true){
@@ -68,44 +58,43 @@ function checkBoard(board){
 function doTurn(tdElement){
   if (updateState(tdElement) === true){
     turn++
-  }
-  if(checkWinner() === true){
-    turn = 0
-    clearBoard()
+    if(checkWinner()){
+      clearBoard()
+    }
   }
 }
 
 function clearBoard(){
-  getBoardArray()
-  // let gameBoard = document.querySelectorAll('td');
-  // gameBoard = Array.from(gameBoard)
+  gameBoard = getBoardArray()
+  $("#message").text('')
   gameBoard.forEach(function(spot){
     spot.innerHTML = ''
   })
   currentGame = 0
+  turn = 0
 }
-
-function previousGames(array){
-  document.getElementById('games').innerHTML = "<ul>"
-  array.data.forEach(function(element){
-    $('#games').append(`<li> ${element.id} </li>`)
-  })
-  document.getElementById('games') += "</ul>"
-}
-
-
-function getPreviousGames() {
-		$('button#previous').on('click',function() {
-				$.get("/games", function(data) {
-					previousGames(data)
-				})
-		})
-	}
 
 function getBoardArray() {
   var gameBoard = document.querySelectorAll('td');
   return gameBoard = Array.from(gameBoard)
 }
+
+
+$(document).ready(function() {
+  attachListeners();
+});
+
+function attachListeners() {
+	$('td').on('click', function() {
+    if(!checkWinner()){
+      doTurn(this)
+    }
+	})
+  $('button#save').on('click', () => saveGame())
+  $('button#previous').on('click', () => getPreviousGames())
+  $('button#clear').on('click', () => clearBoard())
+}
+
 
 function saveGame() {
   gameBoard = getBoardArray()
@@ -120,25 +109,45 @@ function saveGame() {
       type: 'PATCH',
       url: `/games/${currentGame}`,
       data: gameData
-  })
-    } else {
+    })
+  } else {
     $.post('/games', gameData, function(game){
         currentGame = game.data.id
+        $('#games').append(`<li><button id="gameId-${game.data.id}">${game.data.id}</button></li>`)
+        $(`#gameId-${game.data.id}`).on('click', () => reloadGame(game.data.id))
     })
   }
+}
 
+function getPreviousGames() {
+	$('button#previous').on('click',function() {
+			$.get("/games", function(data) {
+				previousGames(data)
+			})
+	})
+	}
 
+function previousGames(array){
+  if(array.data.length >= 1){
+    document.getElementById('games').innerHTML = "<ul>"
+    array.data.forEach(function(element){
+      createButton(element)
+  })
+    document.getElementById('games').innerHTML += "</ul>"
   }
+}
 
+function createButton(element){
+  $("#games").append(`<li><button id="gameId-${element.id}">${element.id}</button></li>`)
+  $(`#gameId-${element.id}`).on('click', () => reloadGame(element.id));
+}
 
-$(document).ready(function() {
-  attachListeners();
-});
-
-function attachListeners() {
-	$('td').on('click', function() {
-	doTurn(this)
-})
-  $('#save').on('click', () => saveGame())
-  $('#previous').on('click', () => getPreviousGames())
+function reloadGame(id){
+ $.get('games/' + id,function(game){
+    let state = game.data.attributes.state
+    let board = document.querySelectorAll('td')
+    for(var i = 0; i < 9; i++){
+      board[i] = state[i]
+    }
+  })
 }
