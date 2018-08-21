@@ -24,7 +24,11 @@ function player(){
 
 function updateState(tdElement){
   var move = player()
-  tdElement.innerHTML = move
+  if(tdElement.innerHTML === ''){
+    tdElement.innerHTML = move
+    return true
+  }
+  return false
 }
 
 
@@ -37,7 +41,7 @@ function checkWinner(){
   gameBoard = Array.from(gameBoard)
     for(var i =0; i<winCombos.length; i++){
       var combo = winCombos[i]
-        if(gameBoard[combo[0]].innerHTML === gameBoard[combo[1]].innerHTML && gameBoard[combo[1]].innerHTML && gameBoard[combo[2]].innerHTML && gameBoard[combo[1]].innerHTML !== '' ){
+        if((gameBoard[combo[0]].innerHTML === gameBoard[combo[1]].innerHTML) && (gameBoard[combo[1]].innerHTML === gameBoard[combo[2]].innerHTML) && (gameBoard[combo[1]].innerHTML !== '') ){
           var player = gameBoard[combo[0]].innerHTML
           setMessage(`Player ${player} Won!`)
           return true
@@ -45,7 +49,7 @@ function checkWinner(){
         }
       }
       if(checkBoard(gameBoard) === true){
-        setMessage("Tie Game!")
+        setMessage("Tie game.")
       }
       return false
 }
@@ -60,9 +64,21 @@ function checkBoard(board){
 }
 
 function doTurn(tdElement){
-  turn += 1
-  updateState(tdElement)
-  checkWinner()
+  if (updateState(tdElement) === true){
+    turn += 1
+  }
+  if(checkWinner() === true){
+    turn = 0
+    clearBoard()
+  }
+}
+
+function clearBoard(){
+  let gameBoard = document.querySelectorAll('td');
+  gameBoard = Array.from(gameBoard)
+  gameBoard.forEach(function(spot){
+    spot.innerHTML = ''
+  })
 }
 
 function previousGames(array){
@@ -71,4 +87,14 @@ function previousGames(array){
     $('#games').append(`<li> ${element} </li>`)
   })
   document.getElementById('games') += "</ul>"
+}
+
+$(document).ready(function() {
+  attachListeners();
+});
+
+function attachListeners() {
+	$('td').on('click', function() {
+	doTurn(this)
+})
 }
