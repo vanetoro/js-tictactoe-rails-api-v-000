@@ -1,6 +1,6 @@
 // Code your JavaScript / jQuery solution here
 var turn = 0;
-var currentGame;
+var currentGame = 0;
 
 var winCombos = [
   [0,1,2],
@@ -67,7 +67,7 @@ function checkBoard(board){
 
 function doTurn(tdElement){
   if (updateState(tdElement) === true){
-    turn += 1
+    turn++
   }
   if(checkWinner() === true){
     turn = 0
@@ -82,13 +82,13 @@ function clearBoard(){
   gameBoard.forEach(function(spot){
     spot.innerHTML = ''
   })
-  currentGame += 1
+  currentGame = 0
 }
 
 function previousGames(array){
-  document.getElementById('games') = "<ul>"
-  array.forEach(function(element){
-    $('#games').append(`<li> ${element} </li>`)
+  document.getElementById('games').innerHTML = "<ul>"
+  array.data.forEach(function(element){
+    $('#games').append(`<li> ${element.id} </li>`)
   })
   document.getElementById('games') += "</ul>"
 }
@@ -105,24 +105,28 @@ function getPreviousGames() {
 function getBoardArray() {
   var gameBoard = document.querySelectorAll('td');
   return gameBoard = Array.from(gameBoard)
-  return gameBoard
 }
 
 function saveGame() {
   gameBoard = getBoardArray()
   var state = []
-
-  gameBoard.forEach(function(){
-    state.push(gameBoard.innerHTML)
+  gameBoard.forEach(function(board){
+    state.push(board.innerHTML)
   })
 
   var gameData = { state: state };
-
-  $.ajax({
-    type: 'POST',
-    url: `/games/`,
-    data: gameData
+  if (currentGame){
+    $.ajax({
+      type: 'PATCH',
+      url: `/games/${currentGame}`,
+      data: gameData
   })
+    } else {
+    $.post('/games', gameData, function(game){
+        currentGame = game.data.id
+    })
+  }
+
 
   }
 
@@ -136,4 +140,5 @@ function attachListeners() {
 	doTurn(this)
 })
   $('#save').on('click', () => saveGame())
+  $('#previous').on('click', () => getPreviousGames())
 }
