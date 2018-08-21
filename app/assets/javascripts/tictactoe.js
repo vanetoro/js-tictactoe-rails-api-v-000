@@ -13,14 +13,14 @@ var winCombos = [
   ]
 
 
-
-function player(){
-  if(turn%2 === 0){
-		return 'X'
-	} else{
-    return 'O'
-  }
-}
+player = () => turn% 2 ? 'X' : "O"
+// function player(){
+//   if(turn%2 === 0){
+// 		return 'X'
+// 	} else{
+//     return 'O'
+//   }
+// }
 
 function updateState(tdElement){
   var move = player()
