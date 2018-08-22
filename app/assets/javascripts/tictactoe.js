@@ -19,7 +19,7 @@ player = () => turn%2===0 ? 'X' : "O"
 function updateState(tdElement){
   var move = player()
   if(tdElement.innerHTML === ''){
-    tdElement.innerHTML = move
+   tdElement.innerHTML = move
     return true
   }
   return false
@@ -37,12 +37,16 @@ function checkWinner(){
       if((gameBoard[combo[0]].innerHTML === gameBoard[combo[1]].innerHTML) && (gameBoard[combo[1]].innerHTML === gameBoard[combo[2]].innerHTML) && (gameBoard[combo[1]].innerHTML !== '') ){
         var player = gameBoard[combo[0]].innerHTML
         setMessage(`Player ${player} Won!`)
+        saveGame()
         return true
         }
       }
       if(checkBoard(gameBoard) === true){
         setMessage("Tie game.")
+        saveGame()
+        return true
       }
+      // saveGame()
       return false
 }
 
@@ -56,7 +60,7 @@ function checkBoard(board){
 }
 
 function doTurn(tdElement){
-  if (updateState(tdElement) === true){
+  if (updateState(tdElement)){
     turn++
     if(checkWinner()){
       clearBoard()
@@ -76,7 +80,8 @@ function clearBoard(){
 
 function getBoardArray() {
   var gameBoard = document.querySelectorAll('td');
-  return gameBoard = Array.from(gameBoard)
+  gameBoard = Array.from(gameBoard)
+  return gameBoard
 }
 
 
@@ -90,9 +95,10 @@ function attachListeners() {
       doTurn(this)
     }
 	})
-  $('button#save').on('click', () => saveGame())
-  $('button#previous').on('click', () => getPreviousGames())
-  $('button#clear').on('click', () => clearBoard())
+  $('#save').on('click', () => saveGame())
+  $('#previous').on('click', () => previousGames())
+  $('#clear').on('click', () => clearBoard())
+  $('#games').on('click', () => reloadGame())
 }
 
 
@@ -113,41 +119,41 @@ function saveGame() {
   } else {
     $.post('/games', gameData, function(game){
         currentGame = game.data.id
-        $('#games').append(`<li><button id="gameId-${game.data.id}">${game.data.id}</button></li>`)
-        $(`#gameId-${game.data.id}`).on('click', () => reloadGame(game.data.id))
+        $('#games').append(`<li><button id="${game.data.id}">${game.data.id}</button></li>`)
+    //     $('#games').append(`<li><button id="gameId-${game.data.id}">${game.data.id}</button></li>`)
+    //     $(`#gameId-${game.data.id}`).on('click', () => reloadGame(game.data.id))
     })
   }
 }
 
-function getPreviousGames() {
-	$('button#previous').on('click',function() {
-			$.get("/games", function(data) {
-				previousGames(data)
-			})
-	})
-	}
 
-function previousGames(array){
+
+function previousGames(){
+  // if (!currentGame){
+  //   saveGame()
+  // }
+  $.get("/games", (array) => {
   if(array.data.length >= 1){
     document.getElementById('games').innerHTML = "<ul>"
-    array.data.forEach(function(element){
-      createButton(element)
-  })
+    array.data.forEach( (element) => {
+      $("#games").append(`<li><button id="${element.id}">${element.id}</button></li>`)
+      // $("#games").append(`<li><button id="gameId-${element.id}">${element.id}</button></li>`)
+      // $(`#gameId-${element.id}`).on('click', () => {debugger; reloadGame(element.id)})
+    })
     document.getElementById('games').innerHTML += "</ul>"
   }
 }
-
-function createButton(element){
-  $("#games").append(`<li><button id="gameId-${element.id}">${element.id}</button></li>`)
-  $(`#gameId-${element.id}`).on('click', () => reloadGame(element.id));
+)
 }
 
-function reloadGame(id){
- $.get('games/' + id,function(game){
+function reloadGame(){
+  var id = parseInt(event.target.innerHTML)
+  $.get('/games/' + id,function(game){
     let state = game.data.attributes.state
     let board = document.querySelectorAll('td')
     for(var i = 0; i < 9; i++){
-      board[i] = state[i]
+      board[i].innerHTML = state[i]
+      currentGame = id
     }
   })
 }
