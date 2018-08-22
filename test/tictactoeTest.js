@@ -558,8 +558,8 @@ describe('AJAX interactions with the Rails API', () => {
 
         saveButton.click();
 
-        expect(requests[1].method).to.equal('POST');
-        expect(requests[1].url).to.equal('/games');
+        expect(requests[0].method).to.equal('POST');
+        expect(requests[0].url).to.equal('/games');
       });
     });
   });
@@ -633,7 +633,7 @@ describe('AJAX interactions with the Rails API', () => {
       const gameButtons = Array.from(gamesDiv.children).filter(c => c.tagName === 'BUTTON');
 
       gameButtons[0].click();
-      console.log("this is a super long string request!!!! And we are inside of a test --------------------------------------------------------------------------------------------------------------------", requests[1])
+      // debugger
       expect(requests[1].method).to.equal('GET');
       expect(requests[1].url).to.equal('/games/1');
     });

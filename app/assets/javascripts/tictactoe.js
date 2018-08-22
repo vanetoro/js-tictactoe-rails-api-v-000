@@ -158,10 +158,14 @@ function reloadGame(){
   //   saveGame()
   // }
   var id = parseInt(event.target.innerHTML)
-  $.get ('/games/' + id,function(game){
+  $.get (`/games/${id}`,function(game){
     let state = game.data.attributes.state
     let board = document.querySelectorAll('td')
+    turn = 0
     for(var i = 0; i < 9; i++){
+      if(state[i] === 'X' || state[i] === 'O'){
+        turn++
+      }
       board[i].innerHTML = state[i]
       currentGame = id
     }
