@@ -129,9 +129,9 @@ function saveGame() {
 
 
 function previousGames(){
-  // if (!currentGame){
-  //   saveGame()
-  // }
+  if (!currentGame){
+    saveGame()
+  }
   $.get("/games", (array) => {
   if(array.data.length >= 1){
     document.getElementById('games').innerHTML = "<ul>"
